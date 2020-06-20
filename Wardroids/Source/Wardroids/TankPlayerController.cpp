@@ -41,19 +41,39 @@ void ATankPlayerController::AimTowardsCrosshair()
  
     //Aim Turret
 
-    FVector HitLoc; //OUT parameter 
+    FVector HitLocation; //OUT parameter 
 
-    if (!GetSightRayHitLocation(OUT HitLoc))
+    if (GetSightRayHitLocation(OUT HitLocation))
     {
-         UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *HitLoc.ToString());
+        //UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *HitLocation.ToString());
     }
+
 }
 
+//Get a world location
 bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 {
-    HitLocation = FVector(1.0);
     //Raycast from camera to crosshair
     //If raycast hits a place in the world, tell tank to turn turret/raise barrel towards that location
         //do this with OUT parameter FVector
-    return false;
+
+    //Find the crosshair location'
+    int32 ViewportSizeX, ViewportSizeY;
+    GetViewportSize(ViewportSizeX, ViewportSizeY);
+
+    FVector2D ScreenLocation (ViewportSizeX * CrosshairX, ViewportSizeY * CrosshairY);
+    
+    FVector WorldDirection;
+    if (GetLookDirection(ScreenLocation, WorldDirection))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Look Direction: %s"), *WorldDirection.ToString());
+    }
+
+    return true;
+}
+
+bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& WorldDirection) const
+{
+    FVector WorldLocation;
+    return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, WorldLocation, WorldDirection);
 }
