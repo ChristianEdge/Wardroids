@@ -22,7 +22,8 @@ public:
 
 	void AimTowardsCrosshair();
 	bool GetSightRayHitLocation(FVector& HitLocation) const;
-	bool GetLookDirection(FVector2D ScreenLocation, FVector& WorldDirection) const;
+	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
+	bool GetWorldHitLocation(FVector LookDirection, FVector& HitLocation) const;
 
 	ATank* Tank = nullptr;
 	ATank* GetControlledTank() const;
@@ -32,4 +33,7 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	float CrosshairY = 0.3333f;
+
+	UPROPERTY(EditAnywhere)
+	float LookRange = 1000000.0f;
 };
