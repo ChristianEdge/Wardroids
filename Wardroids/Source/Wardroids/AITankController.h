@@ -17,13 +17,10 @@ class WARDROIDS_API AAITankController : public AAIController
 
 public:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick( float DeltaTime ) override;
 
-	void AimAtTarget(ATank* Target);
+	void AimAtTarget( ATank* Target );
 
-	ATank* Tank = nullptr;
 	ATank* GetControlledTank() const;
 	ATank* GetPlayerTank() const;
-
-	ATank* PlayerTank = nullptr;
 };

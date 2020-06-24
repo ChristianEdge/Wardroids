@@ -9,19 +9,17 @@ void ATankPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    Tank = GetControlledTank();
-
-    if (Tank == nullptr)
+    if (GetControlledTank() == nullptr)
     {
         UE_LOG(LogTemp, Error, TEXT("TankPlayerController is not attached to a Pawn!"));
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("I am ATankPlayerController attached to Pawn: %s"), *Tank->GetName());
+        UE_LOG(LogTemp, Warning, TEXT("I am ATankPlayerController attached to Pawn: %s"), *GetControlledTank()->GetName());
     }
 }
 
-void ATankPlayerController::Tick(float DeltaTime)
+void ATankPlayerController::Tick( float DeltaTime )
 {
     Super::Tick(DeltaTime);
 
@@ -37,24 +35,22 @@ ATank* ATankPlayerController::GetControlledTank() const
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-    if (Tank == nullptr) {return;}
- 
-    //Aim Turret
+    if (!GetControlledTank()) {return;}
 
     FVector HitLocation; //OUT parameter 
 
     if (GetSightRayHitLocation(OUT HitLocation))
     {
-        UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *HitLocation.ToString());
+        //UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *HitLocation.ToString());
+        GetControlledTank()->AimAtTarget(HitLocation);
     }
-
 }
 
 //Get a world location
-bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
+bool ATankPlayerController::GetSightRayHitLocation( FVector& HitLocation ) const
 {
     //Raycast from camera to crosshair
-    //If raycast hits a place in the world, tell tank to turn turret/raise barrel towards that location
+    //If raycast hits a place in the world, tell Tank to turn turret/raise barrel towards that location
         //do this with OUT parameter FVector
 
     //Find the crosshair location
@@ -63,22 +59,20 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 
     FVector2D CrosshairSceenLocation (ViewportSizeX * CrosshairX, ViewportSizeY * CrosshairY);
     
+    //Find the current look direction 
     FVector LookDirection;
     if (GetLookDirection(CrosshairSceenLocation, LookDirection))
-    {
-        //UE_LOG(LogTemp, Warning, TEXT("Look Direction: %s"), *LookDirection.ToString());
+    {   //UE_LOG(LogTemp, Warning, TEXT("Look Direction: %s"), *LookDirection.ToString());
 
-        //Do a line trace through to the world
         //If we hit something (FHitResult),
-            //Do something
+            //Do something - tell the tank to move the turret.
         GetWorldHitLocation(LookDirection, HitLocation);
-
     }
 
     return true;
 }
 
-bool ATankPlayerController::GetLookDirection(FVector2D CrosshairSceenLocation, FVector& LookDirection) const
+bool ATankPlayerController::GetLookDirection( FVector2D CrosshairSceenLocation, FVector& LookDirection ) const
 {
     FVector WorldLocation;
     return DeprojectScreenPositionToWorld(
@@ -88,24 +82,21 @@ bool ATankPlayerController::GetLookDirection(FVector2D CrosshairSceenLocation, F
         LookDirection);
 }
 
-bool ATankPlayerController::GetWorldHitLocation(FVector LookDirection, FVector& HitLocation) const
+bool ATankPlayerController::GetWorldHitLocation( FVector LookDirection, FVector& HitLocation ) const
 {
-    FHitResult TargetThatWasHit;
+    FHitResult TargetHit;
 
     FVector StartPosition = PlayerCameraManager->GetCameraLocation();
     FVector EndPosition = StartPosition + (LookDirection * LookRange);
 
-    FCollisionQueryParams HitParams(FName(TEXT("")), false, GetOwner());
-    FCollisionResponseParams ResponseParams;
-
-    if  ( GetWorld()->LineTraceSingleByChannel(OUT TargetThatWasHit,
-                                            StartPosition,
-                                            EndPosition,
-                                            ECollisionChannel::ECC_Visibility))
+    if  ( GetWorld()->LineTraceSingleByChannel( OUT TargetHit,
+                                                StartPosition,
+                                                EndPosition,
+                                                ECollisionChannel::ECC_Visibility) )
     {
-        HitLocation = TargetThatWasHit.Location;
+        HitLocation = TargetHit.Location;
         return true;
     }
 
-    return false;
+    else { return false; }
 }

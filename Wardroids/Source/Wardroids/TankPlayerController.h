@@ -2,15 +2,12 @@
 
 #pragma once
 
-
 #include "Tank.h"
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h" //Must be last
 
-/**
- * 
- */
+
 UCLASS()
 class WARDROIDS_API ATankPlayerController : public APlayerController
 {
@@ -25,14 +22,13 @@ public:
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
 	bool GetWorldHitLocation(FVector LookDirection, FVector& HitLocation) const;
 
-	ATank* Tank = nullptr;
 	ATank* GetControlledTank() const;
 
 	UPROPERTY(EditAnywhere)
-	float CrosshairX = 0.5f;
+	float CrosshairX = 0.5f; //Relative position of crosshair on screen
 	
 	UPROPERTY(EditAnywhere)
-	float CrosshairY = 0.3333f;
+	float CrosshairY = 0.3333f; //Relative position of crosshair on screen
 
 	UPROPERTY(EditAnywhere)
 	float LookRange = 1000000.0f;
