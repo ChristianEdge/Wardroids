@@ -15,7 +15,7 @@ void ATankPlayerController::BeginPlay()
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("I am ATankPlayerController attached to Pawn: %s"), *GetControlledTank()->GetName());
+        //UE_LOG(LogTemp, Warning, TEXT("I am ATankPlayerController attached to Pawn: %s"), *GetControlledTank()->GetName());
     }
 }
 
@@ -23,33 +23,33 @@ void ATankPlayerController::Tick( float DeltaTime )
 {
     Super::Tick(DeltaTime);
 
-    //Aim crosshair at PlayerTank
+    //Aim tank turret
     AimTowardsCrosshair();
 }
 
 ATank* ATankPlayerController::GetControlledTank() const
 {
-    return Cast<ATank>(GetPawn());
+    return Cast<ATank>( GetPawn() );
 }
 
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-    if (!GetControlledTank()) {return;}
+    if ( !GetControlledTank() ) {return;}
 
     FVector HitLocation; //OUT parameter 
 
-    if (GetSightRayHitLocation(OUT HitLocation))
+    if ( GetSightRayHitLocation( OUT HitLocation ) )
     {
         //UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *HitLocation.ToString());
-        GetControlledTank()->AimAtTarget(HitLocation);
+        GetControlledTank()->AimAtLocation( HitLocation );
     }
 }
 
 //Get a world location
 bool ATankPlayerController::GetSightRayHitLocation( FVector& HitLocation ) const
 {
-    //Raycast from camera to crosshair
+    //Raycast from camera through crosshair to location in world, get hit result
     //If raycast hits a place in the world, tell Tank to turn turret/raise barrel towards that location
         //do this with OUT parameter FVector
 
@@ -57,15 +57,12 @@ bool ATankPlayerController::GetSightRayHitLocation( FVector& HitLocation ) const
     int32 ViewportSizeX, ViewportSizeY;
     GetViewportSize(ViewportSizeX, ViewportSizeY);
 
-    FVector2D CrosshairSceenLocation (ViewportSizeX * CrosshairX, ViewportSizeY * CrosshairY);
+    FVector2D CrosshairSceenLocation ( ViewportSizeX * CrosshairX, ViewportSizeY * CrosshairY );
     
     //Find the current look direction 
     FVector LookDirection;
-    if (GetLookDirection(CrosshairSceenLocation, LookDirection))
+    if  ( GetLookDirection( CrosshairSceenLocation, LookDirection )  )
     {   //UE_LOG(LogTemp, Warning, TEXT("Look Direction: %s"), *LookDirection.ToString());
-
-        //If we hit something (FHitResult),
-            //Do something - tell the tank to move the turret.
         GetWorldHitLocation(LookDirection, HitLocation);
     }
 
@@ -98,5 +95,5 @@ bool ATankPlayerController::GetWorldHitLocation( FVector LookDirection, FVector&
         return true;
     }
 
-    else { return false; }
+    else {return false;}
 }

@@ -15,12 +15,12 @@ class WARDROIDS_API ATankPlayerController : public APlayerController
 
 public:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick( float DeltaTime ) override;
 
 	void AimTowardsCrosshair();
-	bool GetSightRayHitLocation(FVector& HitLocation) const;
-	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
-	bool GetWorldHitLocation(FVector LookDirection, FVector& HitLocation) const;
+	bool GetSightRayHitLocation( FVector& HitLocation ) const;
+	bool GetLookDirection( FVector2D ScreenLocation, FVector& LookDirection ) const;
+	bool GetWorldHitLocation( FVector LookDirection, FVector& HitLocation ) const;
 
 	ATank* GetControlledTank() const;
 
