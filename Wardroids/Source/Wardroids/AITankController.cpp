@@ -38,7 +38,7 @@ void AAITankController::Tick( float DeltaTime )
 void AAITankController::AimAtTarget( ATank* Target )
 {
     //Aim Turret
-    GetControlledTank()->AimAtTarget( Target->GetActorLocation() );
+    GetControlledTank()->AimAtLocation( Target->GetActorLocation() );
 }
 
 ATank* AAITankController::GetControlledTank() const
