@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Tank.generated.h"
+#include "TurretAimingComponent.h"
+#include "Tank.generated.h" //Must be the final include
 
 UCLASS()
 class WARDROIDS_API ATank : public APawn
@@ -14,7 +15,13 @@ class WARDROIDS_API ATank : public APawn
 public:
 	ATank();
 
-	void AimAtTarget( FVector HitLocation );
+	void AimAtLocation( FVector HitLocation );
+
+	UFUNCTION( BlueprintCallable, Category = Setup)
+	void SetBarrelReference( UStaticMeshComponent* NewBarrel );
+
+protected:
+	UTurretAimingComponent* Turret = nullptr;
 
 private:
 	// Called when the game starts or when spawned
