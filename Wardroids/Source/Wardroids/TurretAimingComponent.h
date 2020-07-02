@@ -21,7 +21,7 @@ public:
 
 	void SetBarrelReference( UStaticMeshComponent* NewBarrel );
 
-	void Aim( FVector Target ) const;
+	void Aim( FVector TargetLocation, float ProjectileLaunchVelocity ) const;
 
 protected:
 	// Called when the game starts

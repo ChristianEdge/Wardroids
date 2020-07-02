@@ -31,14 +31,17 @@ void AAITankController::Tick( float DeltaTime )
 {
     Super::Tick(DeltaTime);
 
-    //Aim crosshair at PlayerTank
-    AimAtTarget(GetPlayerTank());
+    //Aim at PlayerTank
+    if ( GetPlayerTank() )
+    {
+        AimAtTarget(GetPlayerTank()->GetActorLocation());
+    }
 }
 
-void AAITankController::AimAtTarget( ATank* Target )
+void AAITankController::AimAtTarget( FVector HitLocation )
 {
-    //Aim Turret
-    GetControlledTank()->AimAtLocation( Target->GetActorLocation() );
+    //Pass to Tank, Tank passes to TankAimingComponent
+    GetControlledTank()->AimAtLocation( HitLocation );
 }
 
 ATank* AAITankController::GetControlledTank() const

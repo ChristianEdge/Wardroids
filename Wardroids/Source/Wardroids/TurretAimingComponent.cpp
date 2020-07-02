@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "TurretAimingComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UTurretAimingComponent::UTurretAimingComponent()
@@ -18,8 +18,6 @@ UTurretAimingComponent::UTurretAimingComponent()
 void UTurretAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	
 }
 
 
@@ -31,10 +29,36 @@ void UTurretAimingComponent::TickComponent( float DeltaTime, ELevelTick TickType
 	// ...
 }
 
-void UTurretAimingComponent::Aim( FVector Target ) const
+void UTurretAimingComponent::Aim( FVector TargetLocation, float ProjectileLaunchVelocity ) const
 {
-	auto Name = GetOwner()->GetName();
-	UE_LOG(LogTemp, Warning, TEXT("Tank %s aims at location %s"), *Name, *Target.ToString());
+	if ( !Barrel )  { return; }
+
+	float a = 0;
+	
+	auto BarrelLocation = Barrel->GetComponentLocation().ToString();
+	UE_LOG(LogTemp, Warning, TEXT("Tank %s aims at location %s from %s. Projectile launch speed = %.2f m/s"), 
+													*GetOwner()->GetName(), 
+													*TargetLocation.ToString(), 
+													*BarrelLocation, 
+													ProjectileLaunchVelocity);
+
+	FVector OutLaunchVelocity;
+	FVector StartLocation = Barrel->GetSocketLocation(FName("ProjectileSpawnLocation"));
+
+	bool bIsAimSolution = UGameplayStatics::SuggestProjectileVelocity( 
+		this, 
+		OutLaunchVelocity,
+		StartLocation,
+		TargetLocation,
+		ProjectileLaunchVelocity, 
+		ESuggestProjVelocityTraceOption::TraceFullPath );
+
+	if (bIsAimSolution)	
+	{
+		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+
+		//MoveBarrel()
+	}
 }
 
 void UTurretAimingComponent::SetBarrelReference( UStaticMeshComponent* NewBarrel )
@@ -42,8 +66,5 @@ void UTurretAimingComponent::SetBarrelReference( UStaticMeshComponent* NewBarrel
 	if ( NewBarrel ) 
 	{ 
 		Barrel = NewBarrel; 
-		auto Name = GetOwner()->GetName();
-		auto BarrelLocation = Barrel->GetComponentLocation().ToString();
-		UE_LOG(LogTemp, Warning, TEXT("Tank %s has a barrel at location %s"), *Name, *BarrelLocation);
 	}
 }

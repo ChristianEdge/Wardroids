@@ -19,7 +19,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick( float DeltaTime ) override;
 
-	void AimAtTarget( ATank* Target );
+	void AimAtTarget( FVector HitLocation );
 
 	ATank* GetControlledTank() const;
 	ATank* GetPlayerTank() const;

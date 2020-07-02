@@ -3,7 +3,6 @@
 #include "Engine/World.h"
 #include "TankPlayerController.h"
 
-#define OUT
 
 void ATankPlayerController::BeginPlay()
 {
@@ -37,9 +36,8 @@ void ATankPlayerController::AimTowardsCrosshair()
 {
     if ( !GetControlledTank() ) {return;}
 
-    FVector HitLocation; //OUT parameter 
-
-    if ( GetSightRayHitLocation( OUT HitLocation ) )
+    FVector HitLocation; //OUT parameter
+    if ( GetSightRayHitLocation( HitLocation ) )
     {
         //UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *HitLocation.ToString());
         GetControlledTank()->AimAtLocation( HitLocation );
@@ -49,21 +47,19 @@ void ATankPlayerController::AimTowardsCrosshair()
 //Get a world location
 bool ATankPlayerController::GetSightRayHitLocation( FVector& HitLocation ) const
 {
-    //Raycast from camera through crosshair to location in world, get hit result
-    //If raycast hits a place in the world, tell Tank to turn turret/raise barrel towards that location
-        //do this with OUT parameter FVector
+    //Raycast (line trace) from camera through UI crosshair to a XYZ location in world, out as HitLocation
 
-    //Find the crosshair location
-    int32 ViewportSizeX, ViewportSizeY;
-    GetViewportSize(ViewportSizeX, ViewportSizeY);
-
+    //Find the crosshair position in the viewport
+    int32 ViewportSizeX, ViewportSizeY; 
+    GetViewportSize( ViewportSizeX, ViewportSizeY ); //Out parameters
     FVector2D CrosshairSceenLocation ( ViewportSizeX * CrosshairX, ViewportSizeY * CrosshairY );
     
     //Find the current look direction 
     FVector LookDirection;
     if  ( GetLookDirection( CrosshairSceenLocation, LookDirection )  )
-    {   //UE_LOG(LogTemp, Warning, TEXT("Look Direction: %s"), *LookDirection.ToString());
-        GetWorldHitLocation(LookDirection, HitLocation);
+    {   
+        //UE_LOG(LogTemp, Warning, TEXT("Look Direction: %s"), *LookDirection.ToString());
+        GetWorldHitLocation( LookDirection, HitLocation );
     }
 
     return true;
@@ -72,11 +68,10 @@ bool ATankPlayerController::GetSightRayHitLocation( FVector& HitLocation ) const
 bool ATankPlayerController::GetLookDirection( FVector2D CrosshairSceenLocation, FVector& LookDirection ) const
 {
     FVector WorldLocation;
-    return DeprojectScreenPositionToWorld(
-        CrosshairSceenLocation.X, 
-        CrosshairSceenLocation.Y, 
-        WorldLocation, 
-        LookDirection);
+    return DeprojectScreenPositionToWorld(  CrosshairSceenLocation.X, 
+                                            CrosshairSceenLocation.Y, 
+                                            WorldLocation, 
+                                            LookDirection); // out parameter
 }
 
 bool ATankPlayerController::GetWorldHitLocation( FVector LookDirection, FVector& HitLocation ) const
@@ -86,14 +81,18 @@ bool ATankPlayerController::GetWorldHitLocation( FVector LookDirection, FVector&
     FVector StartPosition = PlayerCameraManager->GetCameraLocation();
     FVector EndPosition = StartPosition + (LookDirection * LookRange);
 
-    if  ( GetWorld()->LineTraceSingleByChannel( OUT TargetHit,
-                                                StartPosition,
-                                                EndPosition,
-                                                ECollisionChannel::ECC_Visibility) )
+    bool bIsLineTracable = GetWorld()->LineTraceSingleByChannel( TargetHit,  // out parameter
+                                                                 StartPosition,
+                                                                 EndPosition,
+                                                                 ECollisionChannel::ECC_Visibility);
+    if (bIsLineTracable)
     {
         HitLocation = TargetHit.Location;
         return true;
     }
-
-    else {return false;}
+    else 
+    { 
+        HitLocation = FVector(0);
+        return false; 
+    }
 }
