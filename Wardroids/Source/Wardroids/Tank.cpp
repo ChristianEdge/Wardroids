@@ -3,7 +3,7 @@
 
 #include "Tank.h"
 
-// Sets default values
+// Set default values
 ATank::ATank()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -32,7 +32,8 @@ void ATank::SetupPlayerInputComponent( UInputComponent* PlayerInputComponent )
 
 void ATank::AimAtLocation( FVector HitLocation )
 {
-	Turret->Aim( HitLocation );	
+	//UE_LOG(LogTemp, Warning, TEXT("%s aims at %s"), *GetName(), *HitLocation.ToString());
+	Turret->Aim( HitLocation, ProjectileLaunchVelocity );	
 }
 
 void ATank::SetBarrelReference( UStaticMeshComponent* NewBarrel )

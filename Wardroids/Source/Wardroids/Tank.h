@@ -17,8 +17,11 @@ public:
 
 	void AimAtLocation( FVector HitLocation );
 
-	UFUNCTION( BlueprintCallable, Category = Setup)
+	UFUNCTION( BlueprintCallable, Category = Setup )
 	void SetBarrelReference( UStaticMeshComponent* NewBarrel );
+
+	UPROPERTY( EditAnywhere, Category = Attack )
+	float ProjectileLaunchVelocity = 100000.0f;
 
 protected:
 	UTurretAimingComponent* Turret = nullptr;
