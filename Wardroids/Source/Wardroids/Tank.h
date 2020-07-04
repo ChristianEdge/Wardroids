@@ -7,6 +7,8 @@
 #include "TurretAimingComponent.h"
 #include "Tank.generated.h" //Must be the final include
 
+class UTankBarrelComponent;
+
 UCLASS()
 class WARDROIDS_API ATank : public APawn
 {
@@ -18,13 +20,16 @@ public:
 	void AimAtLocation( FVector HitLocation );
 
 	UFUNCTION( BlueprintCallable, Category = Setup )
-	void SetBarrelReference( UStaticMeshComponent* NewBarrel );
+	void SetBarrelReference( UTankBarrelComponent* NewBarrel );
+
+	UFUNCTION( BlueprintCallable, Category = Setup )
+	void SetTurretReference( UStaticMeshComponent* NewTurret );
 
 	UPROPERTY( EditAnywhere, Category = Attack )
 	float ProjectileLaunchVelocity = 100000.0f;
 
 protected:
-	UTurretAimingComponent* Turret = nullptr;
+	UTurretAimingComponent* TurretAimComponent = nullptr;
 
 private:
 	// Called when the game starts or when spawned

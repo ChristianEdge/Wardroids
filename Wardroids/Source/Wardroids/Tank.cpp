@@ -9,7 +9,7 @@ ATank::ATank()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Turret = CreateDefaultSubobject<UTurretAimingComponent>(FName("TurretAimingComponent"));
+	TurretAimComponent = CreateDefaultSubobject<UTurretAimingComponent>(FName("TurretAimingComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -33,10 +33,15 @@ void ATank::SetupPlayerInputComponent( UInputComponent* PlayerInputComponent )
 void ATank::AimAtLocation( FVector HitLocation )
 {
 	//UE_LOG(LogTemp, Warning, TEXT("%s aims at %s"), *GetName(), *HitLocation.ToString());
-	Turret->Aim( HitLocation, ProjectileLaunchVelocity );	
+	TurretAimComponent->Aim( HitLocation, ProjectileLaunchVelocity );	
 }
 
-void ATank::SetBarrelReference( UStaticMeshComponent* NewBarrel )
+void ATank::SetBarrelReference( UTankBarrelComponent* NewBarrel )
 {
-	Turret->SetBarrelReference( NewBarrel );
+	TurretAimComponent->SetBarrelReference( NewBarrel );
+}
+
+void ATank::SetTurretReference( UStaticMeshComponent* NewTurret )
+{
+	TurretAimComponent->SetTurretReference( NewTurret );
 }
