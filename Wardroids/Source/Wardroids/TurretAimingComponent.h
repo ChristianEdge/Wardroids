@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "TurretAimingComponent.generated.h"
 
+class UTankBarrelComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WARDROIDS_API UTurretAimingComponent : public UActorComponent
@@ -19,15 +20,17 @@ public:
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 
-	void SetBarrelReference( UStaticMeshComponent* NewBarrel );
+	void SetBarrelReference( UTankBarrelComponent* NewBarrel );
+	void SetTurretReference( UStaticMeshComponent* NewTurret );
 
-	void Aim( FVector TargetLocation, float ProjectileLaunchVelocity ) const;
+	void Aim( FVector TargetLocation, float ProjectileLaunchVelocity );
+	void MoveBarrel( FVector AimDirection );
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
-	UStaticMeshComponent* Barrel = nullptr;
-		
+	UTankBarrelComponent* Barrel = nullptr;
+	UStaticMeshComponent* Turret = nullptr;
 };
