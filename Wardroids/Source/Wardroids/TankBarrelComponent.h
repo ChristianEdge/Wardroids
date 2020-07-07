@@ -6,9 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "TankBarrelComponent.generated.h"
 
-/**
- * 
- */
+
 UCLASS( meta = (BlueprintSpawnableComponent) )
 class WARDROIDS_API UTankBarrelComponent : public UStaticMeshComponent
 {
@@ -16,12 +14,13 @@ class WARDROIDS_API UTankBarrelComponent : public UStaticMeshComponent
 
 public:
 
-	void Elevate( float DegreesPerSecond );
+	//Relative speed between -1 (move down) and +1 (move up)
+	void Elevate( float RelativeSpeed );
 	
 private:
 
 	UPROPERTY( EditAnywhere, Category = Actions)
-	float MaxDegreesPerSecond = 20.0f;
+	float MaxDegreesPerSecond = 5.0f;
 
 	UPROPERTY( EditAnywhere, Category = Actions )
 	float MaxElevationDegrees = 40.0f;
