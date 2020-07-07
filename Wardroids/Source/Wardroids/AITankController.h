@@ -2,14 +2,12 @@
 
 #pragma once
 
-#include "Tank.h"
 #include "AIController.h"
 #include "CoreMinimal.h"
 #include "AITankController.generated.h" //Must be last
 
-/**
- * 
- */
+class ATank;
+
 UCLASS()
 class WARDROIDS_API AAITankController : public AAIController
 {
