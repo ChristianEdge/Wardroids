@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "TurretAimingComponent.h"
 #include "Tank.generated.h" //Must be the final include
 
 class UTankBarrelComponent;
+class UTurretComponent;
+class UTurretAimingComponent;
 
 UCLASS()
 class WARDROIDS_API ATank : public APawn
@@ -19,15 +20,6 @@ public:
 
 	void AimAtLocation( FVector HitLocation );
 
-	UFUNCTION( BlueprintCallable, Category = Setup )
-	void SetBarrelReference( UTankBarrelComponent* NewBarrel );
-
-	UFUNCTION( BlueprintCallable, Category = Setup )
-	void SetTurretReference( UStaticMeshComponent* NewTurret );
-
-	UPROPERTY( EditAnywhere, Category = Attack )
-	float ProjectileLaunchVelocity = 100000.0f;
-
 protected:
 	UTurretAimingComponent* TurretAimComponent = nullptr;
 
@@ -35,9 +27,15 @@ private:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Called every frame
-	virtual void Tick( float DeltaTime ) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
+	
+	UFUNCTION( BlueprintCallable, Category = Setup )
+	void SetBarrelReference( UTankBarrelComponent* NewBarrel );
+
+	UFUNCTION( BlueprintCallable, Category = Setup )
+	void SetTurretReference( UTurretComponent* NewTurret );
+
+	UPROPERTY( EditAnywhere, Category = Attack )
+	float ProjectileLaunchVelocity = 100000.0f;
 };
