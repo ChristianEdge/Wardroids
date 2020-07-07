@@ -9,6 +9,7 @@
 class UTankBarrelComponent;
 class UTurretComponent;
 class UTurretAimingComponent;
+class AProjectile;
 
 UCLASS()
 class WARDROIDS_API ATank : public APawn
@@ -19,6 +20,9 @@ public:
 	ATank();
 
 	void AimAtLocation( FVector HitLocation );
+
+	UFUNCTION( BlueprintCallable, Category = Attack )
+	void FireMainGun();
 
 protected:
 	UTurretAimingComponent* TurretAimComponent = nullptr;
@@ -38,4 +42,9 @@ private:
 
 	UPROPERTY( EditAnywhere, Category = Attack )
 	float ProjectileLaunchVelocity = 100000.0f;
+
+	UTankBarrelComponent* Barrel = nullptr;
+
+	UPROPERTY( EditAnywhere, Category = Attack )
+	TSubclassOf<AProjectile> ProjectileBlueprint;
 };
