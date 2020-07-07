@@ -2,6 +2,7 @@
 
 #include "TurretAimingComponent.h"
 #include "TankBarrelComponent.h"
+#include "TurretComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -9,7 +10,7 @@ UTurretAimingComponent::UTurretAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -22,16 +23,9 @@ void UTurretAimingComponent::BeginPlay()
 }
 
 
-// Called every frame
-void UTurretAimingComponent::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
-{
-	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
-
-}
-
 void UTurretAimingComponent::Aim( FVector TargetLocation, float ProjectileLaunchVelocity )
 {
-	if ( !Barrel )  { return; }
+	if ( !Barrel || !Turret )  { return; }
 	
 	/*
 	auto BarrelLocation = Barrel->GetComponentLocation().ToString();
@@ -59,10 +53,14 @@ void UTurretAimingComponent::Aim( FVector TargetLocation, float ProjectileLaunch
 	if (bIsAimSolution)	
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal(); 
-		//UE_LOG(LogTemp, Warning, TEXT("Tank %s aim direction (as unit vector) : %s"), *GetOwner()->GetName(), *AimDirection.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("Tank %s has aim solution (as unit vector) : %s"), *GetOwner()->GetName(), *AimDirection.ToString());
 
 		MoveBarrel( AimDirection );
-		//TODO Rotate Turret
+		MoveTurret( AimDirection );
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("Tank %s has no aim solution!"), *GetOwner()->GetName());
 	}
 }
 
@@ -79,7 +77,17 @@ void UTurretAimingComponent::MoveBarrel( FVector AimDirection )
 								*DeltaRotator.ToString()); */
 
 	//Move a certain amount each frame given a barrel speed
-	Barrel->Elevate(5.0f);
+	Barrel->Elevate(DeltaRotator.Pitch);
+}
+
+void UTurretAimingComponent::MoveTurret ( FVector AimDirection )
+{
+	//Get current barrel position and final direction
+	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
+	auto AimDirectionRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimDirectionRotator - BarrelRotator;
+	
+	Turret->Rotate( DeltaRotator.Yaw );
 }
 
 void UTurretAimingComponent::SetBarrelReference( UTankBarrelComponent* NewBarrel )
@@ -87,7 +95,7 @@ void UTurretAimingComponent::SetBarrelReference( UTankBarrelComponent* NewBarrel
 	if ( NewBarrel ) { Barrel = NewBarrel; }
 }
 
-void UTurretAimingComponent::SetTurretReference( UStaticMeshComponent* NewTurret )
+void UTurretAimingComponent::SetTurretReference( UTurretComponent* NewTurret )
 {
 	if ( NewTurret ) { Turret = NewTurret; }
 }
