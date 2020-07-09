@@ -6,10 +6,13 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h" //Must be the final include
 
+
+//Forward declarations
 class UTankBarrelComponent;
 class UTurretComponent;
 class UTurretAimingComponent;
 class AProjectile;
+
 
 UCLASS()
 class WARDROIDS_API ATank : public APawn
@@ -41,7 +44,12 @@ private:
 	void SetTurretReference( UTurretComponent* NewTurret );
 
 	UPROPERTY( EditAnywhere, Category = Attack )
-	float ProjectileLaunchVelocity = 100000.0f;
+	float ProjectileLaunchVelocity = 40000.0f;
+
+	UPROPERTY( EditAnywhere, Category = Attack )
+	float FireDelay = 1.5f;
+
+	float LastFire = 0.0f;
 
 	UTankBarrelComponent* Barrel = nullptr;
 

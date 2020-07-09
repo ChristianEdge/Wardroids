@@ -34,22 +34,23 @@ void ATank::AimAtLocation( FVector HitLocation )
 }
 
 void ATank::FireMainGun()
-{
-	UE_LOG( LogTemp, Warning, TEXT("Tank %s fires!"), *GetOwner()->GetName() );
-	
-	FVector SpawnLocation = Barrel->GetSocketLocation("ProjectileSpawnLocation");
-	FRotator SpawnRotation = Barrel->GetSocketRotation("ProjectileSpawnLocation");
-	
-	//Spawn projectile
-	GetWorld()->SpawnActor<AProjectile>( ProjectileBlueprint, 
-										 SpawnLocation, 
-										 SpawnRotation );
+{	
+	auto Time = GetWorld()->GetTimeSeconds(); //FPlatformTime::Seconds();
+	if ( Time >  (LastFire + FireDelay) )
+	{
+		//Spawn projectile
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>( ProjectileBlueprint, 
+			Barrel->GetSocketLocation("ProjectileSpawnLocation"), 
+			Barrel->GetSocketRotation("ProjectileSpawnLocation") );
+
+		Projectile->LaunchProjectile( ProjectileLaunchVelocity );
+		LastFire = Time;
+	}
 }
 
 void ATank::SetBarrelReference( UTankBarrelComponent* NewBarrel )
 {
 	if ( !NewBarrel ) { return; }
-
 	TurretAimComponent->SetBarrelReference( NewBarrel );
 	Barrel = NewBarrel;
 }
