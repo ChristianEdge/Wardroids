@@ -4,45 +4,41 @@
 #include "Tank.h"
 #include "Engine/World.h"
 
+
 void AAITankController::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (!GetControlledTank())
-    {
-        UE_LOG(LogTemp, Error, TEXT("AITanKController is not attached to a Pawn!"));
-    }
-    else
-    {
-        //UE_LOG(LogTemp, Warning, TEXT("I am AITankController attached to Pawn: %s"), *GetControlledTank()->GetName());
-    }
+    ControlledTank = GetControlledTank();
+    FirstPlayerTank = GetPlayerTank();
 
-    if (!GetPlayerTank())
+    if ( !ControlledTank )
     {
-         UE_LOG(LogTemp, Error, TEXT("AITanKController can not find a FirstPlayerController!"));
-    }
-    else
-    {
-         //UE_LOG(LogTemp, Warning, TEXT("%s has targeted %s"), *GetControlledTank()->GetName(), *GetPlayerTank()->GetName());
+        UE_LOG( LogTemp, Error, TEXT("AITanKController is not attached to a Pawn!") );
     }
     
+    if ( !FirstPlayerTank )
+    {
+         UE_LOG( LogTemp, Error, TEXT("AITanKController can not find a FirstPlayerController!") );
+    }
 }
 
 void AAITankController::Tick( float DeltaTime )
 {
-    Super::Tick(DeltaTime);
+    Super::Tick( DeltaTime );
 
-    //Aim at PlayerTank
-    if ( GetPlayerTank() )
+    if ( FirstPlayerTank )
     {
-        AimAtTarget(GetPlayerTank()->GetActorLocation());
+        AimAtTarget( FirstPlayerTank->GetActorLocation() );
+
+        ControlledTank->FireMainGun();
     }
 }
 
 void AAITankController::AimAtTarget( FVector HitLocation )
 {
     //Pass to Tank, Tank passes to TankAimingComponent
-    GetControlledTank()->AimAtLocation( HitLocation );
+    ControlledTank->AimAtLocation( HitLocation );
 }
 
 ATank* AAITankController::GetControlledTank() const

@@ -6,7 +6,9 @@
 #include "CoreMinimal.h"
 #include "AITankController.generated.h" //Must be last
 
+//Forawrd declarations
 class ATank;
+
 
 UCLASS()
 class WARDROIDS_API AAITankController : public AAIController
@@ -19,6 +21,8 @@ public:
 
 	void AimAtTarget( FVector HitLocation );
 
+	ATank* ControlledTank = nullptr;
+	ATank* FirstPlayerTank = nullptr;
 	ATank* GetControlledTank() const;
 	ATank* GetPlayerTank() const;
 };
