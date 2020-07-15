@@ -46,13 +46,13 @@ private:
 	UPROPERTY( EditAnywhere, Category = Attack )
 	float ProjectileLaunchVelocity = 40000.0f;
 
-	UPROPERTY( EditAnywhere, Category = Attack )
+	UPROPERTY( EditAnywhere, Category = Attack ) 
 	float FireDelay = 1.5f;
 
 	float LastFire = 0.0f;
 
 	UTankBarrelComponent* Barrel = nullptr;
 
-	UPROPERTY( EditAnywhere, Category = Attack )
+	UPROPERTY( EditDefaultsOnly, Category = Attack )
 	TSubclassOf<AProjectile> ProjectileBlueprint;
 };

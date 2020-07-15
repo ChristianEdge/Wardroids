@@ -92,7 +92,7 @@ bool ATankPlayerController::GetWorldHitLocation( FVector LookDirection, FVector&
     }
     else 
     { 
-        HitLocation = FVector(0);
+        HitLocation = FVector( 0 );
         return false; 
     }
 }
